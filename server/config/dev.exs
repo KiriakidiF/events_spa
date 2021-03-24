@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :events_server, EventsServer.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "events_server",
+  password: "Oquahn2shoh1",
   database: "events_server_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
