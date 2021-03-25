@@ -1,5 +1,7 @@
 import store from './store';
 
+let _apiURL = "http://localhost:4000/api/v1/"
+
 function set_token(opts) {
     let state = store.getState();
     let token = state?.session?.token;
@@ -18,7 +20,7 @@ function set_token(opts) {
 }
 
 export async function api_get(path) {
-    let text = await fetch("http://localhost:4000/api/v1" + path, set_token({}));
+    let text = await fetch(_apiURL + path, set_token({}));
     let resp = await text.json();
     return resp.data;
 }
@@ -31,9 +33,18 @@ export async function api_post(path, data) {
         },
         body: JSON.stringify(data)
     };
-    let text = await fetch("http://localhost:4000/api/v1" + path, set_token(opts));
+    let text = await fetch(_apiURL + path, set_token(opts));
 
     return await text.json();
+}
+
+export async function api_delete(path) {
+    let opts = {
+        method: "DELETE"
+    }
+    let text = await fetch(_apiURL + path, set_token(opts));
+    console.log(text)
+    return await text;
 }
 
 export function api_login(email, password) {
@@ -78,6 +89,11 @@ export async function fetchEvents() {
 
 export function createEvent(event) {
     return api_post("/events", {event});
+}
+
+export function deleteEvent(id) {
+    console.log("Deleting id: " + id)
+    return api_delete("events/" + id);
 }
 
 export function load_defaults() {

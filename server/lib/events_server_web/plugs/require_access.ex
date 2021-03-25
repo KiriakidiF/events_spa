@@ -5,12 +5,12 @@ defmodule EventsServerWeb.Plugs.RequireAccess do
 
   def init(args), do: args
 
-  def call(conn, %{"id" => id}) do
-    user = conn.assigns[:current_users]
-    IO.inspect(user)
+  def call(conn, _params) do
+    user = conn.assigns[:current_user]
+    %{"id" => id} = conn.params
     event = Events.get_event!(id)
-
-    if event.owner.id == user.id do
+    IO.inspect(event)
+    if event.owner_id == user.id do
       conn
     else
       conn

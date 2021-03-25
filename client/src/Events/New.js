@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 import pick from 'lodash/pick';
 import { createEvent, fetchEvents } from '../api';
 
+import Flatpickr from 'react-flatpickr';
 
 function EventsNew() {
   let history = useHistory();
@@ -13,6 +14,12 @@ function EventsNew() {
   function update(field, ev) {
     let e1 = Object.assign({}, event);
     e1[field] = ev.target.value;
+    setEvent(e1);
+  }
+
+  function updateDate(date) {
+    let e1 = Object.assign({}, event);
+    e1["date"] = date[0];
     setEvent(e1);
   }
 
@@ -41,10 +48,11 @@ function EventsNew() {
           </Form.Group>
           <Form.Group>
             <Form.Label>Date</Form.Label>
-            <Form.Control
-                          id="event_date_picker"
-                          onChange={(ev) => update("date", ev)}
-                          value={event.date || ""} />
+            <Flatpickr
+                value={event.date || ""}
+                onChange={(date) => updateDate(date)}
+                options={{enableTime: true}}
+            />
           </Form.Group>
           <Form.Group>
             <Form.Label>Description</Form.Label>

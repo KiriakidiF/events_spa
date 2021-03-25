@@ -20,7 +20,12 @@ defmodule EventsServerWeb.EventController do
   end
 
   def create(conn, %{"event" => event_params}) do
-    with {:ok, %Event{} = event} <- Events.create_event(event_params) do
+    IO.inspect(event_params)
+    event_params = event_params
+    |> Map.put("owner_id", conn.assigns[:current_user].id)
+    create = Events.create_event(event_params)
+    IO.inspect(create)
+    with {:ok, %Event{} = event} <- create do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.event_path(conn, :show, event))

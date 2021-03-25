@@ -6,11 +6,17 @@ function Event({event}) {
     return (
         <Col>
             <Card>
-                <Card.Text>
+                <Card.Body>
                     Name: {event.name}<br />
                     Date: {event.date}<br />
                     Description: {event.desc}<br />
-                </Card.Text>
+                </Card.Body>
+                <Card.Link href={`/events/${event.id}`}>
+                    View Event
+                </Card.Link>
+                <Card.Link>
+
+                </Card.Link>
             </Card>
         </Col>
     );
