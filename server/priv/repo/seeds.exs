@@ -13,6 +13,8 @@
 alias EventsServer.Repo
 alias EventsServer.Users.User
 alias EventsServer.Events.Event
+alias EventsServer.Invites.Invite
+alias EventsServer.Comments.Comment
 
 defmodule Inject do
   def user(name, pass, email) do
@@ -22,6 +24,14 @@ defmodule Inject do
 
   def event(name, date, desc, owner) do
     Repo.insert!(%Event{name: name, date: date, desc: desc, owner_id: owner})
+  end
+
+  def invite(response, user_email, event_id) do
+    Repo.insert!(%Invite{response: response, user_email: user_email, event_id: event_id})
+  end
+
+  def comment(body, event_id, user_id) do
+    Repo.insert!(%Comment{body: body, event_id: event_id, user_id: user_id})
   end
 end
 
@@ -33,3 +43,7 @@ tedBday = Inject.event("Ted's Birthday",
   "Its gonna be great.",
   ted.id
 )
+
+todInvite = Inject.invite("", tod.email, tedBday.id)
+
+todComment = Inject.comment("What will we do?", tedBday.id, tod.id)

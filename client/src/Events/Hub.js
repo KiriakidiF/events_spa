@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 
 function Event({event}) {
     return (
-        <Col>
+        <Col md="3">
             <Card>
                 <Card.Body>
                     Name: {event.name}<br />

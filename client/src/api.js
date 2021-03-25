@@ -81,6 +81,7 @@ export function createUser(user) {
 }
 
 export async function fetchEvents() {
+    console.log("fetching events")
     api_get("/events").then((data) => store.dispatch({
             type: "events/set",
             data: data
@@ -92,8 +93,8 @@ export function createEvent(event) {
 }
 
 export function deleteEvent(id) {
-    console.log("Deleting id: " + id)
-    return api_delete("events/" + id);
+    console.log("Deleting id: " + id);
+    return api_delete("/events/" + id);
 }
 
 export function load_defaults() {

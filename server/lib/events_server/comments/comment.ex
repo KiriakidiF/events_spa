@@ -4,7 +4,8 @@ defmodule EventsServer.Comments.Comment do
 
   schema "comments" do
     field :body, :string
-    field :event_id, :id
+    #field :event_id, :id
+    belongs_to :event, EventsServer.Events.Event
     belongs_to :user, EventsServer.Users.User
 
     timestamps()

@@ -5,8 +5,6 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Provider } from 'react-redux';
 
-import flatpickr from 'flatpickr'
-
 import store from './store';
 import { load_defaults } from './api';
 import { BrowserRouter as Router } from 'react-router-dom';
@@ -21,8 +19,6 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-flatpickr('#event_date_picker', {enableTime: true})
 
 load_defaults();
 

@@ -1,4 +1,4 @@
-defmodule EventsServerWeb.Plugs.RequireAccess do
+defmodule EventsServerWeb.Plugs.RequireOwner do
   import Plug.Conn
 
   alias EventsServer.Events
@@ -6,12 +6,12 @@ defmodule EventsServerWeb.Plugs.RequireAccess do
   def init(args), do: args
 
   def call(conn, _params) do
-    #TODO add access to invitees
     user = conn.assigns[:current_user]
     %{"id" => id} = conn.params
     event = Events.get_event!(id)
     IO.inspect(event)
-    if event.owner_id == user.id do
+    if event.owner_id == user.id
+      || Enum.any?(event.invites, (fn inv -> inv.user_email == user.email end)) do
       conn
     else
       conn

@@ -7,6 +7,7 @@ defmodule EventsServerWeb.EventController do
   alias EventsServerWeb.Plugs
   plug Plugs.RequireAuth
   plug Plugs.RequireAccess when action not in [:create, :index]
+  plug Plugs.RequireOwner when action in [:update, :delete]
 
   action_fallback EventsServerWeb.FallbackController
 
@@ -15,7 +16,10 @@ defmodule EventsServerWeb.EventController do
     IO.inspect(user)
     events = Events.list_events()
     IO.inspect(events)
-    events = Enum.filter(events, (fn evt -> evt.owner.id == user.id end))
+    events = Enum.filter(events, (fn evt ->
+      evt.owner.id == user.id
+      || Enum.any?(evt.invites, (fn inv -> inv.user_email == user.email end))
+    end));
     render(conn, "index.json", events: events)
   end
 

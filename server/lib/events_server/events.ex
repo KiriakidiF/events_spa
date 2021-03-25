@@ -20,6 +20,8 @@ defmodule EventsServer.Events do
   def list_events() do
     Repo.all(Event)
     |> Repo.preload(:owner)
+    |> Repo.preload(:comments)
+    |> Repo.preload(:invites)
   end
 
   @doc """
@@ -39,6 +41,8 @@ defmodule EventsServer.Events do
   def get_event!(id) do
     Repo.get!(Event, id)
     |> Repo.preload(:owner)
+    |> Repo.preload(:comments)
+    |> Repo.preload(:invites)
   end
 
   @doc """
