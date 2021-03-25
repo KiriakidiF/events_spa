@@ -12,6 +12,24 @@
 
 alias EventsServer.Repo
 alias EventsServer.Users.User
+alias EventsServer.Events.Event
 
-ted = Repo.insert!(%User{name: "ted", password_hash: "", email: "ted@gmail"})
-tod = Repo.insert!(%User{name: "tod", password_hash: "", email: "tod@yahoo"})
+defmodule Inject do
+  def user(name, pass, email) do
+    hash = Argon2.hash_pwd_salt(pass)
+    Repo.insert!(%User{name: name, password_hash: hash, email: email})
+  end
+
+  def event(name, date, desc, owner) do
+    Repo.insert!(%Event{name: name, date: date, desc: desc, owner_id: owner})
+  end
+end
+
+ted = Inject.user("ted", "tedtedted", "ted@gmail")
+tod = Inject.user("tod", "todtodtod", "tod@yahoo")
+
+tedBday = Inject.event("Ted's Birthday",
+  ~U[2021-03-25 14:11:50Z],
+  "Its gonna be great.",
+  ted.id
+)

@@ -4,6 +4,9 @@ defmodule EventsServerWeb.CommentController do
   alias EventsServer.Comments
   alias EventsServer.Comments.Comment
 
+  alias EventsServerWeb.Plugs
+  plug Plugs.RequireAuth
+
   action_fallback EventsServerWeb.FallbackController
 
   def index(conn, _params) do

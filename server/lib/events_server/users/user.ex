@@ -6,7 +6,6 @@ defmodule EventsServer.Users.User do
     field :email, :string
     field :name, :string
     field :password_hash, :string
-    field :profile_hash, :string
 
     has_many :events, EventsServer.Events.Event, foreign_key: :owner_id
     has_many :comments, EventsServer.Comments.Comment
@@ -17,9 +16,18 @@ defmodule EventsServer.Users.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :email, :password_hash, :profile_hash])
+    |> cast(attrs, [:name, :email])
+    |> add_password_hash(attrs["password"])
     |> validate_required([:name, :email, :password_hash])
     |> validate_format(:email, ~r/@/)
     |> unique_constraint(:email)
+  end
+
+  def add_password_hash(cset, nil) do
+    cset
+  end
+
+  def add_password_hash(cset, password) do
+    change(cset, Argon2.add_hash(password))
   end
 end

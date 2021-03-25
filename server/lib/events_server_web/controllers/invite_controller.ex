@@ -4,6 +4,9 @@ defmodule EventsServerWeb.InviteController do
   alias EventsServer.Invites
   alias EventsServer.Invites.Invite
 
+  alias EventsServerWeb.Plugs
+  plug Plugs.RequireAuth
+
   action_fallback EventsServerWeb.FallbackController
 
   def index(conn, _params) do

@@ -17,8 +17,9 @@ defmodule EventsServer.Events do
       [%Event{}, ...]
 
   """
-  def list_events do
+  def list_events() do
     Repo.all(Event)
+    |> Repo.preload(:owner)
   end
 
   @doc """
@@ -35,7 +36,10 @@ defmodule EventsServer.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id), do: Repo.get!(Event, id)
+  def get_event!(id) do
+    Repo.get!(Event, id)
+    |> Repo.preload(:owner)
+  end
 
   @doc """
   Creates a event.

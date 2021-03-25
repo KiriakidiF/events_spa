@@ -4,10 +4,18 @@ defmodule EventsServerWeb.EventController do
   alias EventsServer.Events
   alias EventsServer.Events.Event
 
+  alias EventsServerWeb.Plugs
+  plug Plugs.RequireAuth
+  plug Plugs.RequireAccess when action not in [:create, :index]
+
   action_fallback EventsServerWeb.FallbackController
 
   def index(conn, _params) do
+    user = conn.assigns[:current_user]
+    IO.inspect(user)
     events = Events.list_events()
+    IO.inspect(events)
+    events = Enum.filter(events, (fn evt -> evt.owner.id == user.id end))
     render(conn, "index.json", events: events)
   end
 
