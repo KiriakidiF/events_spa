@@ -6,7 +6,7 @@ import CommentsNew from './Comments/New';
 import InvitesNew from './Invites/New';
 import InvitesUpdate from './Invites/Update';
 
-function Invite({session, invite, id}) {
+function Invite({session, invite, id, owns_event}) {
     let history = useHistory();
     console.log(invite?.user_email)
 
@@ -20,8 +20,25 @@ function Invite({session, invite, id}) {
 
     let response = responseNormal;
     if (session?.email == invite.user_email) {
-        response = responseEdit
+        response = responseEdit;
     }
+
+    let deleteButton = null;
+    if (owns_event) {
+        deleteButton = (
+            <Button onClick={ () => 
+                {
+                    if (window.confirm("Delete this Invite?")){
+                        deleteInvite(id, invite.id).then((_data) => {
+                            fetchEvents();
+                            history.push(`/events/${id}`);
+                        });
+                    }
+                } } 
+            >Delete Invite</Button>
+        );
+    }
+
 
     return (
         <div>   
@@ -34,16 +51,7 @@ function Invite({session, invite, id}) {
                         {response}
                     </Col>
                     <Col>
-                        <Button onClick={ () => 
-                                {
-                                    if (window.confirm("Delete this Invite?")){
-                                        deleteInvite(id, invite.id).then((_data) => {
-                                            fetchEvents();
-                                            history.push(`/events/${id}`);
-                                        });
-                                    }
-                                } } 
-                            >Delete Invite</Button>
+                        {deleteButton}
                     </Col>
                 </Row>
             </div>
@@ -51,9 +59,26 @@ function Invite({session, invite, id}) {
     );
 }
 
-function Comment({comment, id}) {
+function Comment({comment, id, owns_event, session}) {
     let history = useHistory();
-    console.log(comment?.body)
+    console.log(comment);
+
+    let deletecomment = null;
+    if (owns_event || session?.user_id == comment.user.id) {
+        deletecomment = (
+            <Button onClick={ () => 
+                {
+                    if (window.confirm("Delete this Comment?")){
+                        deleteComment(id, comment.id).then((_data) => {
+                            fetchEvents();
+                            history.push(`/events/${id}`);
+                        });
+                    }
+                } } 
+            >Delete Comment</Button>
+        );
+    }
+
     return (
         <div>
             <Col>
@@ -63,16 +88,7 @@ function Comment({comment, id}) {
                 <p>Posted by: {comment?.user?.name}</p>
             </Col>
             <Col>
-                <Button onClick={ () => 
-                        {
-                            if (window.confirm("Delete this Comment?")){
-                                deleteComment(id, comment.id).then((_data) => {
-                                    fetchEvents();
-                                    history.push(`/events/${id}`);
-                                });
-                            }
-                        } } 
-                    >Delete Comment</Button>
+                {deletecomment}
             </Col>
         </div>
     );
@@ -114,13 +130,49 @@ function EventsShow({session, events}) {
         );
     }
 
+    console.log(session)
+
     console.log(event)
 
-    let invites = event?.invites;
-    invites = invites?.map((inv) => <Invite session={session} invite={inv} id={id} key={inv.id}/>);
-    let comments = event?.comments;
-    comments = comments?.map((cmt) => <Comment comment={cmt} id={id} key={cmt.id}/>);
+    let owns_event = event?.owner?.email == session?.email;
 
+    console.log(owns_event)
+
+    let invites = event?.invites;
+    invites = invites?.map((inv) => <Invite session={session} 
+                                            invite={inv} 
+                                            id={id}
+                                            owns_event={owns_event} 
+                                            key={inv.id}/>);
+    let comments = event?.comments;
+    comments = comments?.map((cmt) => <Comment 
+                                                comment={cmt}
+                                                id={id} 
+                                                owns_event={owns_event}
+                                                session={session}
+                                                key={cmt.id}/>);
+
+    let newinvite = null;
+
+    let deleteevent = null;
+
+    if (owns_event) {
+        newinvite = (
+            <InvitesNew id/>
+        );
+
+        deleteevent = (
+            <Button onClick={ () => 
+                {
+                    if (window.confirm("Delete this Event?")){
+                        deleteEvent(id).then((_data) => {
+                            fetchEvents();
+                            history.push("/events");
+                        });
+                    }
+                } } >Delete Event</Button>
+        );
+    }
     
     
     return (
@@ -157,21 +209,13 @@ function EventsShow({session, events}) {
                     </Row>
                     { invites }
                     <Row>
-                        <InvitesNew id/>
+                        {newinvite}
                     </Row>
                 </Col>
             </Row>
             
             <Row>
-                <Button onClick={ () => 
-                    {
-                        if (window.confirm("Delete this Event?")){
-                            deleteEvent(id).then((_data) => {
-                                fetchEvents();
-                                history.push("/events");
-                            });
-                        }
-                    } } >Delete Event</Button>
+                {deleteevent}
             </Row>
             
             <Row>

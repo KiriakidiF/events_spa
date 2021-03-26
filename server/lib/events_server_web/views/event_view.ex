@@ -3,6 +3,7 @@ defmodule EventsServerWeb.EventView do
   alias EventsServerWeb.EventView
   alias EventsServerWeb.InviteView
   alias EventsServerWeb.CommentView
+  alias EventsServerWeb.UserView
 
   def render("index.json", %{events: events}) do
     %{data: render_many(events, EventView, "event.json")}
@@ -26,11 +27,18 @@ defmodule EventsServerWeb.EventView do
       nil
     end
 
+    owner = if Ecto.assoc_loaded?(event.owner) do
+      render_one(event.owner, UserView, "user.json")
+    else
+      nil
+    end
+
     %{id: event.id,
       name: event.name,
       date: event.date,
       desc: event.desc,
       invites: invites,
-      comments: comments}
+      comments: comments,
+      owner: owner}
   end
 end
