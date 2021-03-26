@@ -3,6 +3,8 @@ defmodule EventsServerWeb.EventController do
 
   alias EventsServer.Events
   alias EventsServer.Events.Event
+  alias EventsServer.Comments
+  alias EventsServer.Invites
 
   alias EventsServerWeb.Plugs
   plug Plugs.RequireAuth
@@ -52,6 +54,12 @@ defmodule EventsServerWeb.EventController do
 
   def delete(conn, %{"id" => id}) do
     event = Events.get_event!(id)
+    for comment <- event.comments do
+      Comments.delete_comment(comment)
+    end
+    for invite <- event.invites do
+      Invites.delete_invite(invite)
+    end
 
     with {:ok, %Event{}} <- Events.delete_event(event) do
       send_resp(conn, :no_content, "")
