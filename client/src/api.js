@@ -1,6 +1,7 @@
 import store from './store';
+import config from './config';
 
-let _apiURL = "http://localhost:4000/api/v1/"
+let _apiURL = config.SERVER_URL
 
 function set_token(opts) {
     let state = store.getState();
