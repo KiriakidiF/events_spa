@@ -2,10 +2,16 @@
 Description=SPA EventManager using Phoenix Framework and database storage
 
 [Service]
+Type=simple
 User=events_spa
+Group=events_spa
 WorkingDirectory=/home/events_spa/events_spa
-ExecStart=/home/events_spa/events_spa/start.sh
-Restart=always
+ExecStart=/bin/bash /home/events_spa/events_spa/start.sh
+Restart=on-failure
+Environment=MIX_ENV=prod
+Environment=PROD=t
+Environment=PORT=4798
+Environment=LANG=en_US.UTF-8
 
 [Install]
 WantedBy=multi-user.target

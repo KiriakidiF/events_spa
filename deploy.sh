@@ -36,8 +36,6 @@ export DATABASE_URL=ecto://events_server:$DB_PASS@localhost/events_server_prod
 (cd server && mix ecto.create)
 (cd server && mix ecto.migrate)
 
-(cd client && npm install)
-#(cd client && webpack --mode production)
 (cd server && mix phx.digest)
 
 

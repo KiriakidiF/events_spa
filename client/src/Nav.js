@@ -87,7 +87,6 @@ function AppNav({error}) {
     }
 
     const location = useLocation();
-    console.log("Current_Path: " + location.pathname)
 
     let history = useHistory();
 
