@@ -1,0 +1,11 @@
+[Unit]
+Description=SPA EventManager using Phoenix Framework and database storage
+
+[Service]
+User=events_spa
+WorkingDirectory=/home/events_spa/events_spa
+ExecStart=/home/events_spa/events_spa/start.sh
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
