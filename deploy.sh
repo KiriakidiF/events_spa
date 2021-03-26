@@ -33,7 +33,7 @@ export SECRET_KEY_BASE
 DB_PASS=$(cat "$CFGD/db_pass")
 export DATABASE_URL=ecto://event_manager:$DB_PASS@localhost/event_manager_prod
 
-(cd serveer && mix ecto.create)
+(cd server && mix ecto.create)
 (cd server && mix ecto.migrate)
 
 (cd client && npm install)
