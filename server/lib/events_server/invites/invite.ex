@@ -14,7 +14,7 @@ defmodule EventsServer.Invites.Invite do
   def changeset(invite, attrs) do
     invite
     |> cast(attrs, [:response, :user_email, :event_id])
-    |> validate_required([:response, :user_email, :event_id])
+    |> validate_required([:user_email, :event_id])
     |> validate_format(:user_email, ~r/@/)
   end
 end

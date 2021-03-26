@@ -1,17 +1,23 @@
-defmodule EventsServerWeb.Plugs.RequireAccess do
+defmodule EventsServerWeb.Plugs.RequireEventOwner do
   import Plug.Conn
 
   alias EventsServer.Events
 
   def init(args), do: args
 
+  @spec call(
+          atom
+          | %{:assigns => nil | maybe_improper_list | map, :params => map, optional(any) => any},
+          any
+        ) ::
+          atom
+          | %{:assigns => nil | maybe_improper_list | map, :params => map, optional(any) => any}
   def call(conn, _params) do
     user = conn.assigns[:current_user]
-    %{"id" => id} = conn.params
-    event = Events.get_event!(id)
+    event_id = conn.assigns[:event_id]
+    event = Events.get_event!(event_id)
     IO.inspect(event)
-    if event.owner_id == user.id
-    || Enum.any?(event.invites, (fn inv -> inv.user_email == user.email end)) do
+    if event.owner_id == user.id do
       conn
     else
       conn

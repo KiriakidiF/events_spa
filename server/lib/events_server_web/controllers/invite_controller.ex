@@ -5,8 +5,9 @@ defmodule EventsServerWeb.InviteController do
   alias EventsServer.Invites.Invite
 
   alias EventsServerWeb.Plugs
-  plug Plugs.RequireEventId when action in [:index]
-  #plug Plugs.RequireAuth
+  plug Plugs.RequireAuth
+  plug Plugs.RequireEventId
+  plug Plugs.RequireEventOwner when action in [:create, :delete]
 
   action_fallback EventsServerWeb.FallbackController
 
@@ -18,7 +19,12 @@ defmodule EventsServerWeb.InviteController do
   end
 
   def create(conn, %{"invite" => invite_params}) do
-    with {:ok, %Invite{} = invite} <- Invites.create_invite(invite_params) do
+    IO.inspect("Trying to create")
+    invite_params = invite_params
+    |> Map.put("event_id", conn.assigns[:event_id])
+    create = Invites.create_invite(invite_params)
+    IO.inspect(create)
+    with {:ok, %Invite{} = invite} <- create do
       conn
       |> put_status(:created)
       |> put_resp_header("location", Routes.invite_path(conn, :show, invite))

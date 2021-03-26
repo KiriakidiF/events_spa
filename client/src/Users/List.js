@@ -5,6 +5,7 @@ function UsersList({users}) {
     let rows = users.map((user) => (
       <tr key={user.id}>
         <td>{user.name}</td>
+        <td>{user.email}</td>
       </tr>
     ));
   
@@ -17,6 +18,7 @@ function UsersList({users}) {
               <thead>
                 <tr>
                   <th>Name</th>
+                  <th>Email</th>
                 </tr>
               </thead>
               <tbody>

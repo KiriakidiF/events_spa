@@ -66,6 +66,17 @@ function session(state = load_session(), action) {
     }
 }
 
+function redirect(state = null, action) {
+    switch (action.type) {
+        case 'redirect/set':
+            return action.data;
+        case 'redirect/clear':
+            return null;
+        default:
+            return state;
+    }
+}
+
 function error(state = null, action) {
     switch (action.type) {
         case 'error/set':
@@ -82,7 +93,8 @@ function root_reducer(state, action) {
         users,
         events,
         session,
-        error
+        error,
+        redirect
     })
     return reducer(state, action);
 }

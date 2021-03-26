@@ -34,8 +34,19 @@ export async function api_post(path, data) {
         body: JSON.stringify(data)
     };
     let text = await fetch(_apiURL + path, set_token(opts));
-    console.log(text);
-    return await text;
+    return await text.json();
+}
+
+export async function api_patch(path, data) {
+    let opts = {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    let text = await fetch(_apiURL + path, set_token(opts));
+    return await text.json();
 }
 
 export async function api_delete(path) {
@@ -43,7 +54,6 @@ export async function api_delete(path) {
         method: "DELETE"
     }
     let text = await fetch(_apiURL + path, set_token(opts));
-    console.log(text)
     return await text;
 }
 
@@ -56,12 +66,11 @@ export async function post_session(path, data) {
         body: JSON.stringify(data)
     };
     let text = await fetch(_apiURL + path, set_token(opts));
-    console.log(text);
     return await text.json();
 }
 
 export function api_login(email, password) {
-    post_session("/session",
+    api_post("/session",
             {email, password}).then((data) => {
                 console.log("login resp", data);
                 if (data.session) {
@@ -94,7 +103,6 @@ export function createUser(user) {
 }
 
 export async function fetchEvents() {
-    console.log("fetching events")
     api_get("/events").then((data) => store.dispatch({
             type: "events/set",
             data: data
@@ -117,7 +125,28 @@ export function deleteComment(id, comment_id) {
     return api_delete("events/" + id + "/comments/" + comment_id);
 }
 
+export function createInvite(id, invite) {
+    return api_post("events/" + id + "/invites", {invite});
+}
+
+export function deleteInvite(id, invite_id) {
+    return api_delete("events/" + id + "/invites/" + invite_id);
+}
+
+export function updateInvite(event_id, invite_id, invite) {
+    console.log("event_id: " + event_id + " inv_id: " + invite_id + " invite: " + invite)
+    return api_patch("events/" + event_id + "/invites/" + invite_id, {invite})
+}
+
 export function load_defaults() {
     fetchUsers();
     fetchEvents();
+}
+
+export function save_redir(redir) {
+    console.log("calliong set redir");
+    store.dispatch({
+        type: "redirect/set",
+        data: redir
+    });
 }

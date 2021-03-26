@@ -1,20 +1,53 @@
 import { connect } from 'react-redux';
-import { Row, Col, Button } from 'react-bootstrap';
-import { deleteEvent, deleteComment, fetchEvents } from '../api';
+import { Row, Col, Button, Form } from 'react-bootstrap';
+import { deleteEvent, deleteComment, deleteInvite, fetchEvents } from '../api';
 import { useParams, useHistory } from 'react-router-dom';
 import CommentsNew from './Comments/New';
+import InvitesNew from './Invites/New';
+import InvitesUpdate from './Invites/Update';
 
-function Invite({invite}) {
+function Invite({session, invite, id}) {
+    let history = useHistory();
     console.log(invite?.user_email)
+
+    let responseNormal = (
+        <p>{invite?.response}</p>
+    );
+
+    let responseEdit = (
+        <InvitesUpdate event_id={id} inv={invite}/>
+    );
+
+    let response = responseNormal;
+    if (session?.email == invite.user_email) {
+        response = responseEdit
+    }
+
     return (
-        <Row>
-            <Col>
-                <p>Email: {invite?.user_email}</p>
-            </Col>
-            <Col>
-                <p>Response: {invite?.response}</p>
-            </Col>
-        </Row>
+        <div>   
+            <div>
+                <Row>
+                    <Col>
+                        <p>{invite?.user_email}</p>
+                    </Col>
+                    <Col>
+                        {response}
+                    </Col>
+                    <Col>
+                        <Button onClick={ () => 
+                                {
+                                    if (window.confirm("Delete this Invite?")){
+                                        deleteInvite(id, invite.id).then((_data) => {
+                                            fetchEvents();
+                                            history.push(`/events/${id}`);
+                                        });
+                                    }
+                                } } 
+                            >Delete Invite</Button>
+                    </Col>
+                </Row>
+            </div>
+        </div>
     );
 }
 
@@ -39,13 +72,37 @@ function Comment({comment, id}) {
                                 });
                             }
                         } } 
-                    >Delete</Button>
+                    >Delete Comment</Button>
             </Col>
         </div>
     );
 }
 
-function EventsShow({events}) {
+function InvitesReport({invites}) {
+    let counts = invites.reduce(
+        (counts, invite) => {
+            switch(invite.response) {
+                case "Yes":
+                    counts[0]++;
+                    break;
+                case "No":
+                    counts[1]++;
+                    break
+                case "Maybe":
+                    counts[2]++;
+                    break;
+                default:
+                    counts[3]++;
+            }
+            return counts;},
+        [0,0,0,0]
+        );
+    return (
+        <p>Yes: {counts[0]} | No: {counts[1]} | Maybe: {counts[2]} | No Response: {counts[3]}</p>
+    );
+}
+
+function EventsShow({session, events}) {
     let history = useHistory();
 
     const {id} = useParams();
@@ -60,7 +117,7 @@ function EventsShow({events}) {
     console.log(event)
 
     let invites = event?.invites;
-    invites = invites?.map((inv) => <Invite invite={inv} key={inv.id}/>);
+    invites = invites?.map((inv) => <Invite session={session} invite={inv} id={id} key={inv.id}/>);
     let comments = event?.comments;
     comments = comments?.map((cmt) => <Comment comment={cmt} id={id} key={cmt.id}/>);
 
@@ -86,7 +143,21 @@ function EventsShow({events}) {
                         <h3>Invitees</h3>
                     </Row>
                     <Row>
-                        { invites }
+                        <InvitesReport invites={event?.invites}/>
+                    </Row>
+                    <Row>
+                        <Col>
+                            <p>Email:</p>
+                        </Col>
+                        <Col>
+                            <p>Response:</p>
+                        </Col>
+                        <Col>
+                        </Col>
+                    </Row>
+                    { invites }
+                    <Row>
+                        <InvitesNew id/>
                     </Row>
                 </Col>
             </Row>
@@ -100,7 +171,7 @@ function EventsShow({events}) {
                                 history.push("/events");
                             });
                         }
-                    } } >Delete</Button>
+                    } } >Delete Event</Button>
             </Row>
             
             <Row>
@@ -122,4 +193,4 @@ function EventsShow({events}) {
     )
 }
 
-export default connect(({events}) => ({events}))(EventsShow);
+export default connect(({session, events}) => ({session, events}))(EventsShow);

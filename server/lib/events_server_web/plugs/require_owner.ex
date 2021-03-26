@@ -10,8 +10,7 @@ defmodule EventsServerWeb.Plugs.RequireOwner do
     %{"id" => id} = conn.params
     event = Events.get_event!(id)
     IO.inspect(event)
-    if event.owner_id == user.id
-      || Enum.any?(event.invites, (fn inv -> inv.user_email == user.email end)) do
+    if event.owner_id == user.id do
       conn
     else
       conn

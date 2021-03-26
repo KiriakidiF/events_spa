@@ -1,12 +1,12 @@
 import { Row, Col, Form, Button } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useState } from 'react'
-import { useHistory } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import pick from 'lodash/pick';
 
 import { createUser, fetchUsers } from '../api';
 
-function UsersNew() {
+function UsersNew({redirect}) {
   let history = useHistory();
   const [user, setUser] = useState({name: "", email: "", pass1: "", pass2: ""});
 
@@ -38,7 +38,12 @@ function UsersNew() {
     createUser(data).then(() => {
         console.log("Login resp" + data);
         fetchUsers();
-        history.push("/users");
+        if (redirect) {
+          history.push(redirect);
+        }
+        else {
+          history.push("/");
+        }
     });
   }
 
@@ -84,7 +89,7 @@ function UsersNew() {
 }
 
 function state2props() {
-  return {};
+  return ({redirect}) => ({redirect});
 }
 
 export default connect(state2props)(UsersNew);

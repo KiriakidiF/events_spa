@@ -1,10 +1,11 @@
 import { Nav, Row, Col, Form,
     Button, Alert } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation, useHistory } from 'react-router-dom';
 
 import { connect } from 'react-redux';
 import { useState } from 'react';
 import { api_login, fetchEvents } from './api';
+import { save_redir } from './api';
 
 function LoginForm() {
     const [email, setEmail] = useState("");
@@ -85,6 +86,16 @@ function AppNav({error}) {
         )
     }
 
+    const location = useLocation();
+    console.log("Current_Path: " + location.pathname)
+
+    let history = useHistory();
+
+    function redirectRegister() {
+        save_redir(location.pathname);
+        history.push("/users/new/");
+    }
+
     return (
         <div>
             <Row>
@@ -98,7 +109,7 @@ function AppNav({error}) {
                     <LoginOrInfo />
                 </Col>
                 <Col>
-                    <Link to="/users/new">Register</Link>
+                    <Button onClick={() => redirectRegister()}>Register</Button>
                 </Col>
             </Row>
             <Row>

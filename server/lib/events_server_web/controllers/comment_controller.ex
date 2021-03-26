@@ -46,9 +46,12 @@ defmodule EventsServerWeb.CommentController do
   end
 
   def delete(conn, %{"id" => id}) do
+    IO.inspect("Got to delete")
     comment = Comments.get_comment!(id)
 
-    with {:ok, %Comment{}} <- Comments.delete_comment(comment) do
+    delete = Comments.delete_comment(comment)
+    IO.inspect(delete)
+    with {:ok, %Comment{}} <- delete do
       send_resp(conn, :no_content, "")
     end
   end
