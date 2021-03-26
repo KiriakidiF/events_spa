@@ -34,6 +34,7 @@ function InvitesUpdate({event_id, inv}) {
               <Form.Control as="select"
                 onChange={(ev) => update("response", ev)}
                 value={invite.response}>
+                <option value={invite.response}>{invite.response}</option>
                 <option value="Yes">Yes</option>
                 <option value="No">No</option>
                 <option value="Maybe">Maybe</option>
