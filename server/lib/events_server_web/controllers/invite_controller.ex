@@ -19,11 +19,9 @@ defmodule EventsServerWeb.InviteController do
   end
 
   def create(conn, %{"invite" => invite_params}) do
-    IO.inspect("Trying to create")
     invite_params = invite_params
     |> Map.put("event_id", conn.assigns[:event_id])
     create = Invites.create_invite(invite_params)
-    IO.inspect(create)
     with {:ok, %Invite{} = invite} <- create do
       conn
       |> put_status(:created)

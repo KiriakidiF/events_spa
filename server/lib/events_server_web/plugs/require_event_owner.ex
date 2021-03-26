@@ -13,10 +13,10 @@ defmodule EventsServerWeb.Plugs.RequireEventOwner do
           atom
           | %{:assigns => nil | maybe_improper_list | map, :params => map, optional(any) => any}
   def call(conn, _params) do
+    IO.inspect("Checking event owner")
     user = conn.assigns[:current_user]
     event_id = conn.assigns[:event_id]
     event = Events.get_event!(event_id)
-    IO.inspect(event)
     if event.owner_id == user.id do
       conn
     else

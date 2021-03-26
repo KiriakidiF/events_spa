@@ -156,6 +156,8 @@ function EventsShow({session, events}) {
 
     let deleteevent = null;
 
+    let editevent = null;
+
     if (owns_event) {
         newinvite = (
             <InvitesNew id/>
@@ -171,6 +173,13 @@ function EventsShow({session, events}) {
                         });
                     }
                 } } >Delete Event</Button>
+        );
+
+        editevent = (
+            <Button onClick={ () => 
+                {
+                    history.push("/events/" + id + "/edit");
+                } } >Edit Event</Button>
         );
     }
     
@@ -216,6 +225,7 @@ function EventsShow({session, events}) {
             
             <Row>
                 {deleteevent}
+                {editevent}
             </Row>
             
             <Row>

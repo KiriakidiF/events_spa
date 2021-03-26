@@ -4,7 +4,6 @@ defmodule EventsServerWeb.Plugs.RequireAuth do
   def init(args), do: args
 
   def call(conn, _args) do
-    IO.inspect("got to auth")
     token = Enum.at(get_req_header(conn, "x-auth"), 0)
     case Phoenix.Token.verify(conn, "user_id",
           token, max_age: 86400) do

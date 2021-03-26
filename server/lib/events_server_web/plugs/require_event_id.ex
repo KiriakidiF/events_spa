@@ -4,8 +4,6 @@ defmodule EventsServerWeb.Plugs.RequireEventId do
   def init(args), do: args
 
   def call(conn, _params) do
-    IO.inspect("got to create")
-    IO.inspect(conn.params)
     case conn.params do
       %{"event_id" => event_id} ->
         conn

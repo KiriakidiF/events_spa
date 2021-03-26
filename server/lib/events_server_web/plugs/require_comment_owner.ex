@@ -7,13 +7,11 @@ defmodule EventsServerWeb.Plugs.RequireCommentOwner do
   def init(args), do: args
 
   def call(conn, _params) do
-    IO.inspect("got to comment owner")
     user = conn.assigns[:current_user]
     event_id = conn.assigns[:event_id]
     event = Events.get_event!(event_id)
     %{"id" => id} = conn.params
     comment = Comments.get_comment!(id)
-    IO.inspect(comment)
     if comment.user_id == user.id
       || event.owner_id == user.id do
       conn

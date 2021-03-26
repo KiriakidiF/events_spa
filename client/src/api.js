@@ -118,6 +118,10 @@ export function deleteEvent(id) {
     return api_delete("/events/" + id);
 }
 
+export function updateEvent(id, event) {
+    return api_patch("events/" + id, {event});
+}
+
 export function createComment(id, comment) {
     return api_post("events/" + id + "/comments", {comment});
 }

@@ -15,9 +15,7 @@ defmodule EventsServerWeb.EventController do
 
   def index(conn, _params) do
     user = conn.assigns[:current_user]
-    IO.inspect(user)
     events = Events.list_events()
-    IO.inspect(events)
     events = Enum.filter(events, (fn evt ->
       evt.owner.id == user.id
       || Enum.any?(evt.invites, (fn inv -> inv.user_email == user.email end))
@@ -26,11 +24,9 @@ defmodule EventsServerWeb.EventController do
   end
 
   def create(conn, %{"event" => event_params}) do
-    IO.inspect(event_params)
     event_params = event_params
     |> Map.put("owner_id", conn.assigns[:current_user].id)
     create = Events.create_event(event_params)
-    IO.inspect(create)
     with {:ok, %Event{} = event} <- create do
       conn
       |> put_status(:created)
@@ -46,8 +42,8 @@ defmodule EventsServerWeb.EventController do
 
   def update(conn, %{"id" => id, "event" => event_params}) do
     event = Events.get_event!(id)
-
-    with {:ok, %Event{} = event} <- Events.update_event(event, event_params) do
+    update = Events.update_event(event, event_params)
+    with {:ok, %Event{} = event} <- update do
       render(conn, "show.json", event: event)
     end
   end

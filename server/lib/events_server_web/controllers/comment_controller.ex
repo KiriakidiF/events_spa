@@ -18,12 +18,10 @@ defmodule EventsServerWeb.CommentController do
   end
 
   def create(conn, %{"comment" => comment_params}) do
-    IO.inspect("got to create")
     comment_params = comment_params
     |> Map.put("user_id", conn.assigns[:current_user].id)
     |> Map.put("event_id", conn.assigns[:event_id])
     create = Comments.create_comment(comment_params)
-    IO.inspect(create)
     with {:ok, %Comment{} = comment} <- create do
       conn
       |> put_status(:created)
@@ -46,11 +44,9 @@ defmodule EventsServerWeb.CommentController do
   end
 
   def delete(conn, %{"id" => id}) do
-    IO.inspect("Got to delete")
     comment = Comments.get_comment!(id)
 
     delete = Comments.delete_comment(comment)
-    IO.inspect(delete)
     with {:ok, %Comment{}} <- delete do
       send_resp(conn, :no_content, "")
     end

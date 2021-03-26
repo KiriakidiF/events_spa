@@ -9,7 +9,6 @@ defmodule EventsServerWeb.Plugs.RequireOwner do
     user = conn.assigns[:current_user]
     %{"id" => id} = conn.params
     event = Events.get_event!(id)
-    IO.inspect(event)
     if event.owner_id == user.id do
       conn
     else

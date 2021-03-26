@@ -8,6 +8,7 @@ import Hub from "./Events/Hub";
 import UsersNew from './Users/New';
 import EventsNew from './Events/New';
 import EventsShow from './Events/Show';
+import EventsEdit from './Events/Edit';
 import React, { useEffect } from 'react';
 
 
@@ -24,8 +25,11 @@ function App() {
       <Route path="/events/new" exact strict>
         <EventsNew />
       </Route>
-      <Route path="/events/:id(\d+)">
+      <Route path="/events/:id(\d+)" exact>
         <EventsShow id/>
+      </Route>
+      <Route path="/events/:id(\d+)/edit" exact>
+        <EventsEdit id/>
       </Route>
       <Route path="/users" exact>
         <UsersList />
