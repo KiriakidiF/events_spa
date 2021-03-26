@@ -1,9 +1,10 @@
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Col, Form, Button, Alert } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom';
 import pick from 'lodash/pick';
 import { createInvite, fetchEvents } from '../../api';
+import config from '../../config';
 
 function InvitesNew() {
   let history = useHistory();
@@ -11,11 +12,19 @@ function InvitesNew() {
 
   const {id} = useParams();
 
+  let clientUrl = config.CLIENT_URL;
+
   function update(field, ev) {
     let e1 = Object.assign({}, invite);
     e1[field] = ev.target.value;
     setInvite(e1);
   }
+
+  let invitedLink = (
+    <Alert variant="success">
+      Invited users can reply to your event at: {clientUrl}events/{id}
+    </Alert>
+  );
 
   function onSubmit(ev) {
     ev.preventDefault();
@@ -23,7 +32,6 @@ function InvitesNew() {
     let data = pick(invite, ['user_email']);
     createInvite(id, data).then(() => {
         fetchEvents();
-        history.push(`/events/${id}`);
     });
   }
 
@@ -42,6 +50,7 @@ function InvitesNew() {
             Save
           </Button>
         </Form>
+        {invitedLink}
       </Col>
     </Row>
   );
