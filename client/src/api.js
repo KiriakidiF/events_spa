@@ -34,8 +34,8 @@ export async function api_post(path, data) {
         body: JSON.stringify(data)
     };
     let text = await fetch(_apiURL + path, set_token(opts));
-
-    return await text.json();
+    console.log(text);
+    return await text;
 }
 
 export async function api_delete(path) {
@@ -47,8 +47,21 @@ export async function api_delete(path) {
     return await text;
 }
 
+export async function post_session(path, data) {
+    let opts = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    };
+    let text = await fetch(_apiURL + path, set_token(opts));
+    console.log(text);
+    return await text.json();
+}
+
 export function api_login(email, password) {
-    api_post("/session",
+    post_session("/session",
             {email, password}).then((data) => {
                 console.log("login resp", data);
                 if (data.session) {
@@ -93,8 +106,15 @@ export function createEvent(event) {
 }
 
 export function deleteEvent(id) {
-    console.log("Deleting id: " + id);
     return api_delete("/events/" + id);
+}
+
+export function createComment(id, comment) {
+    return api_post("events/" + id + "/comments", {comment});
+}
+
+export function deleteComment(id, comment_id) {
+    return api_delete("events/" + id + "/comments/" + comment_id);
 }
 
 export function load_defaults() {

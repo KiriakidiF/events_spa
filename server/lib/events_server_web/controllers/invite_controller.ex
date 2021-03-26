@@ -5,28 +5,10 @@ defmodule EventsServerWeb.InviteController do
   alias EventsServer.Invites.Invite
 
   alias EventsServerWeb.Plugs
-  plug :require_event_id when action in [:index]
+  plug Plugs.RequireEventId when action in [:index]
   #plug Plugs.RequireAuth
 
   action_fallback EventsServerWeb.FallbackController
-
-  # Require an event id and place in conn assigns as integer
-  def require_event_id(conn, _params) do
-    case conn.params do
-      %{"event_id" => event_id} ->
-        conn
-        |> assign(:event_id, String.to_integer(event_id))
-      _ ->
-        conn
-        |> put_resp_header(
-          "content-type", "application/json; charset=UTF-8")
-        |> send_resp(
-          :unprocessable_entity,
-          Jason.encode!(%{"error" => "Must specify an event to access invites"})
-        )
-        |> halt()
-    end
-  end
 
   def index(conn, _params) do
     invites = Invites.list_invites()

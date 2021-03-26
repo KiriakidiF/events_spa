@@ -1,7 +1,8 @@
 import { connect } from 'react-redux';
 import { Row, Col, Button } from 'react-bootstrap';
-import { deleteEvent, fetchEvents } from '../api';
+import { deleteEvent, deleteComment, fetchEvents } from '../api';
 import { useParams, useHistory } from 'react-router-dom';
+import CommentsNew from './Comments/New';
 
 function Invite({invite}) {
     console.log(invite?.user_email)
@@ -17,17 +18,30 @@ function Invite({invite}) {
     );
 }
 
-function Comment({comment}) {
+function Comment({comment, id}) {
+    let history = useHistory();
     console.log(comment?.body)
     return (
-        <Row>
+        <div>
             <Col>
                 <p>{comment?.body}</p>
             </Col>
             <Col>
                 <p>Posted by: {comment?.user?.name}</p>
             </Col>
-        </Row>
+            <Col>
+                <Button onClick={ () => 
+                        {
+                            if (window.confirm("Delete this Comment?")){
+                                deleteComment(id, comment.id).then((_data) => {
+                                    fetchEvents();
+                                    history.push(`/events/${id}`);
+                                });
+                            }
+                        } } 
+                    >Delete</Button>
+            </Col>
+        </div>
     );
 }
 
@@ -48,7 +62,7 @@ function EventsShow({events}) {
     let invites = event?.invites;
     invites = invites?.map((inv) => <Invite invite={inv} key={inv.id}/>);
     let comments = event?.comments;
-    comments = comments?.map((cmt) => <Comment comment={cmt} key={cmt.id}/>);
+    comments = comments?.map((cmt) => <Comment comment={cmt} id={id} key={cmt.id}/>);
 
     
     
@@ -81,7 +95,7 @@ function EventsShow({events}) {
                 <Button onClick={ () => 
                     {
                         if (window.confirm("Delete this Event?")){
-                            deleteEvent(id).then(() => {
+                            deleteEvent(id).then((_data) => {
                                 fetchEvents();
                                 history.push("/events");
                             });
@@ -95,7 +109,12 @@ function EventsShow({events}) {
                         <h3>Comments</h3>
                     </Row>
                     <Row>
-                        { comments }
+                        <CommentsNew id/>
+                    </Row>
+                    <Row>
+                        <Col>
+                            { comments }
+                        </Col>
                     </Row>
                 </Col>
             </Row>

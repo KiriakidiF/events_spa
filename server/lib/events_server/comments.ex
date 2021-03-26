@@ -19,7 +19,7 @@ defmodule EventsServer.Comments do
   """
   def list_comments do
     Repo.all(Comment)
-    |> Repo.preload(:event_id)
+    |> Repo.preload(:event)
     |> Repo.preload(:user)
   end
 
@@ -39,7 +39,7 @@ defmodule EventsServer.Comments do
   """
   def get_comment!(id) do
     Repo.get!(Comment, id)
-    |> Repo.preload(:event_id)
+    |> Repo.preload(:event)
     |> Repo.preload(:user)
   end
 
